@@ -1,0 +1,121 @@
+buildscript {
+    //依赖仓库地址
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+        maven {
+            name 'byxfd-nexus'
+            url nexusUrl
+            allowInsecureProtocol = true
+        }
+    }
+    dependencies {
+        // 引入 gradle 插件
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'groovy'
+    id 'idea'
+    id  'org.springframework.boot' version "${springBootVersion}"
+}
+
+allprojects {
+    //使用插件
+    //使用插件
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'groovy'
+    apply plugin: 'idea'
+    apply plugin: 'application'
+    apply plugin: 'org.springframework.boot'
+
+    group = "com.byxfd.game"
+    version = "1.0.0"
+    mainClassName = 'com.byxfd.game.checkin.GameApplication'
+
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+        maven {
+            name 'byxfd-nexus'
+            url nexusUrl
+            allowInsecureProtocol = true
+        }
+        mavenCentral()
+    }
+    configurations.all {
+        //每隔 0 秒 检查远程依赖是否存在更新
+        resolutionStrategy.cacheChangingModulesFor 0, "seconds"
+    }
+
+    // 使用groovy的indy （注：jdk7以上才行）
+    compileGroovy {
+        groovyOptions.optimizationOptions.indy = true
+    }
+
+    dependencies {
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
+        implementation "com.byxfd:byxfd-context:$byxfdVersion"//公共对象
+        implementation "com.byxfd:byxfd-core:$byxfdVersion"//核心支持
+        implementation "com.byxfd:byxfd-mongo:$byxfdVersion"//mongo支持
+        implementation "com.byxfd:byxfd-logging:$byxfdVersion" //日志支持
+//        implementation "com.byxfd:byxfd-ais:$byxfdVersion"
+        implementation "com.byxfd:byxfd-swagger:$byxfdVersion"
+        implementation "com.byxfd:byxfd-email:$byxfdVersion"
+        implementation "com.byxfd:byxfd-oss:$byxfdVersion"
+        implementation "com.byxfd:byxfd-sms:$byxfdVersion"
+
+
+        implementation 'com.google.guava:guava:23.6.1-jre'
+        implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion" //web支持
+        implementation "org.springframework.boot:spring-boot-starter-freemarker:$springBootVersion"
+        implementation "org.springframework.boot:spring-boot-starter-parent:$springBootVersion"
+
+//        implementation "com.aliyun:dysmsapi20170525:2.0.9" // 阿里短信验证码
+//        implementation "commons-configuration:commons-configuration:1.9" //
+//
+//        implementation "org.springframework.boot:spring-boot-starter-websocket:$springBootVersion" //Spring boot websocket
+//        implementation "com.lowagie:itext:2.1.7"
+//        implementation "com.uqure:jasperreport:6.17.0"
+//        implementation 'commons-digester:commons-digester:1.8'
+//        implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.3"
+        implementation "com.byxfd:byxfd-sso:$byxfdVersion"
+        implementation "com.byxfd:byxfd-sys:$byxfdVersion"
+        implementation "org.springframework.boot:spring-boot-starter-security:$springBootVersion" //spring security
+        testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion",
+                "junit:junit"
+    }
+
+    // 执行jar的主类
+    jar {
+        manifest {
+            attributes "Main-Class": "$mainClassName"
+        }
+    }
+    sourceSets {
+        main {
+            groovy {
+                srcDirs = ['src/main/groovy']
+            }
+        }
+    }
+}
+
+//编译groovy代码时采用 UTF-8
+tasks.withType(GroovyCompile) {
+    groovyOptions.encoding = "UTF-8"
+}
+//编译JAVA文件时采用UTF-8
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+

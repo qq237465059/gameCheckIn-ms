@@ -1,0 +1,64 @@
+byxfd:
+  datasource:
+    byxfd:
+      driverClassName: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost/byxfd_rscj?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
+      username: root
+      password: 123456
+#      isDruid: true
+  config:
+    swaggerOpen: true                #是否开启swagger (true/false)
+  redis:
+    database: 0
+    host: localhost
+    port: 123
+    password:
+#    集群配置，去掉host、port
+#    cluster:
+#        nodes:
+#          - 192.168.0.222:6379
+#          - 192.168.0.221:6379
+    lettuce:
+      pool:
+        max-active: 32
+        max-wait: 300ms
+        max-idle: 16
+        min-idle: 8
+  mongo:
+    enabled: true #配置为fasle 则不读取下列信息， 默认值为true
+    host: localhost
+    port: 123
+    database:
+    username:
+    password:
+    connectionsPerHost: 100
+  rabbitmq:
+    host: localhost # connection host
+    port: 123 # 5772 # connection port
+    username:
+    password:
+    concurrency: 50
+    maxConcurrency: 100
+    virtualHost: /oms
+    queueConcurrency:
+      byxfd.ais.healthcheck2: 1
+      oms.jingdong.writeOffSendEmail: 10
+      oms.aliPay.writeOff: 10
+      oms.jingdong.writeOff: 10
+  logging:
+    error: mongo
+    login: mongo
+  jwt:
+    header: Authorization
+    tokenStartWith: Bearer
+    base64Secret: 1
+    tokenValidityInSeconds: 14400000
+    detect: 1800000
+    renew: 3600000
+    apiTokenStartWith: Basic
+  email:
+    fromUser: 1
+    user: 1
+    pass: 1
+    host: 1
+    port: 1
